@@ -66,14 +66,12 @@ install_pkgs() {
 }
 
 create_keys() {
-   PRIVATE_KEY=$(umask 077; wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey)
-   echo "Private Key: $PRIVATE_KEY"
-
-   #PRIVATE_KEY=$(umask 077; wg genkey | tee /etc/wireguard/private.key)
+   umask 077; wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey
+   PRIVATE_KEY=$(cat /etc/wireguard/privatekey)
 }
 
 create_config() {
-   cat <<< EOF >> /etc/wireguard/wg0.conf
+   cat << EOF >> /etc/wireguard/wg0.conf
    [Interface]
    PrivateKey = $PRIVATE_KEY
    Address = $ADDR                 # ie: 10.8.0.2/24
@@ -92,7 +90,7 @@ EOF
 
 enable_service() {
    # Allow ipv4 forwarding
-   sysctl -w net.ipv4.ip_forward = 1
+   sysctl -w "net.ipv4.ip_forward=1"
    sysctl -p
 
    systemctl enable wg-quick@wg0
