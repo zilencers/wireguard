@@ -31,8 +31,8 @@ EOF
 set_defaults() {
    echo "Setting defaults"
    [[ $ADDR = "" ]] && ADDR="10.8.0.2/24"
-   [[ $ENDPOINT = "" ]] && ENDPOINT="169.2.0.1"
-   [[ $SERVER_PUBKEY = "" ]] && SERVER_PUBKEY=""
+   [[ $ENDPOINT = "" ]] && abnormal_exit "missing argument -e|--endpoint"
+   [[ $SERVER_PUBKEY = "" ]] && abnormal_exit "missing argument -s|--srv-pubkey"
 }
 
 install_pkgs() {
@@ -45,7 +45,6 @@ create_keys() {
    umask 077; wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey
    PRIVATE_KEY=$(cat /etc/wireguard/privatekey)
    PUBLIC_KEY=$(cat /etc/wireguard/publickey)
-   echo "Public Key: $PUBLIC_KEY"
 }
 
 parse_args() {
@@ -80,12 +79,15 @@ main() {
    
    if [ $GENKEY_ONLY -eq 1 ]; then
       install_pkgs
-      create_keys
+      create_keys      
+      echo "Public Key: $PUBLIC_KEY"
       exit 0
    fi
 
    set_defaults
    install_pkgs
+   create_keys
+   create_config
 }
 
 main $@

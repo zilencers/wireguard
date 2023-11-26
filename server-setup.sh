@@ -68,6 +68,7 @@ install_pkgs() {
 create_keys() {
    umask 077; wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey
    PRIVATE_KEY=$(cat /etc/wireguard/privatekey)
+   PUBLIC_KEY=$(cat /etc/wireguard/publickey)
 }
 
 create_config() {
@@ -104,6 +105,9 @@ main() {
    create_keys
    create_config
    enable_service
+
+   echo "Wireguard Server Setup Complete"
+   echo "Public Key: $PUBLIC_KEY"
 
    # Clear bash history
    history -c
