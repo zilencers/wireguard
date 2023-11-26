@@ -61,12 +61,13 @@ set_defaults() {
 }
 
 install_pkgs() {
-   dnf update
-   dnf install wireguard-tools
+   dnf -y update
+   dnf -y install wireguard-tools
 }
 
 create_keys() {
    PRIVATE_KEY=$(umask 077; wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey)
+   echo "Private Key: $PRIVATE_KEY"
 
    #PRIVATE_KEY=$(umask 077; wg genkey | tee /etc/wireguard/private.key)
 }
