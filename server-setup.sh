@@ -52,7 +52,7 @@ parse_args() {
 
 set_defaults() {
    # If no arguments are passed then set default values
-   [[ "$ADDR" = "" ]] && ADDR="10.8.0.2/24"
+   [[ "$ADDR" = "" ]] && ADDR="10.8.0.1/24"
    [[ "$PORT" = "" ]] && PORT=51820
    [[ "$ALLOWED_IPS" = "" ]] && ALLOWED_IPS="10.8.0.0/24"
    [[ "$IFACE" = "" ]] && IFACE=$(ip -br a | grep -m 1 UP | grep -o "^[a-zA-Z]*[0-9].[0-9]")
@@ -74,7 +74,7 @@ create_config() {
    cat << EOF >> /etc/wireguard/wg0.conf
    [Interface]
    PrivateKey = $PRIVATE_KEY
-   Address = $ADDR                 # ie: 10.8.0.2/24
+   Address = $ADDR                 # ie: 10.8.0.1/24
    DNS = 9.9.9.9                   # Bypass local DNS and use the following DNS instead
    ListenPort = $PORT              # 51820 
    SaveConfig = true
