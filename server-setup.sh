@@ -89,6 +89,11 @@ create_config() {
 EOF
 }
 
+add_firewall_rule() {
+   local zone=$(firewall-cmd --get-default-zone)
+   firewall-cmd --zone=$zone --add-port="$PORT/udp"
+}
+
 enable_service() {
    # Allow ipv4 forwarding
    sysctl -w "net.ipv4.ip_forward=1"
@@ -104,6 +109,7 @@ main() {
    install_pkgs
    create_keys
    create_config
+   add_firewall_rule
    enable_service
 
    echo "Wireguard Server Setup Complete"
