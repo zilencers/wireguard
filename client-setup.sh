@@ -41,10 +41,14 @@ install_pkgs() {
 }
 
 create_keys() {
-   echo "Generating encryption keys ..."
-   umask 077; wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey
-   PRIVATE_KEY=$(cat /etc/wireguard/privatekey)
-   PUBLIC_KEY=$(cat /etc/wireguard/publickey)
+   if [ ! -f /etc/wireguard/privatekey ]; then
+      echo "Generating encryption keys ..."
+      umask 077; wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey
+      PRIVATE_KEY=$(cat /etc/wireguard/privatekey)
+      PUBLIC_KEY=$(cat /etc/wireguard/publickey)
+   else
+      echo "Encryption Keys already exist ...skipping"
+   fi
 }
 
 parse_args() {
