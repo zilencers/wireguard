@@ -77,7 +77,7 @@ parse_args() {
 main() {
    parse_args $@
    
-   if [ $GENKEY_ONLY -eq 1 ]; then
+   if [[ $GENKEY_ONLY -eq 1 ]]; then
       install_pkgs
       create_keys      
       echo "Public Key: $PUBLIC_KEY"
