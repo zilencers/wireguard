@@ -77,8 +77,6 @@ create_config() {
    PrivateKey = $PRIVATE_KEY
    Address = $ADDR                 # ie: 10.8.0.1/24
    ListenPort = $PORT              # 51820 
-   PostUp = firewall-cmd --zone=public --add-port 51820/udp && firewall-cmd --zone=public --add-masquerade
-   PostDown = firewall-cmd --zone=public --remove-port 51820/udp && firewall-cmd --zone=public --remove-masquerade
 
    [Peer]
    PublicKey=$CLIENT_PUBKEY        #The Public Key of the Client
@@ -87,14 +85,19 @@ create_config() {
 EOF
 }
 
+#PostUp = firewall-cmd --zone=public --add-port 51820/udp && firewall-cmd --zone=public --add-masquerade
+#PostDown = firewall-cmd --zone=public --remove-port 51820/udp && firewall-cmd --zone=public --remove-masquerade
+
 #DNS = 9.9.9.9                   # Bypass local DNS and use the following DNS instead
 #SaveConfig = true
 #PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $IFACE -j MASQUERADE
 #PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $IFACE -j MASQUERADE
-#add_firewall_rule() {
-#   local zone=$(firewall-cmd --get-default-zone)
-#   firewall-cmd --zone=$zone --add-port="$PORT/udp"
-#}
+
+add_firewall_rule() {
+   firewall-cmd --permanent --add-port="$PORT/udp" --zone=public
+   firewall-cmd --permanent --zone=public --add-masquerade
+   firewall-cmd --reload
+}
 
 enable_service() {
    sysctl -w "net.ipv4.ip_forward=1"
@@ -110,7 +113,7 @@ main() {
    install_pkgs
    create_keys
    create_config
-   #add_firewall_rule
+   add_firewall_rule
    enable_service
 
    echo "Wireguard Server Setup Complete"
