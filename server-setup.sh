@@ -55,7 +55,7 @@ set_defaults() {
    [[ "$ADDR" = "" ]] && ADDR="10.8.0.1/24"
    [[ "$PORT" = "" ]] && PORT=51820
    [[ "$ALLOWED_IPS" = "" ]] && ALLOWED_IPS="10.8.0.0/24"
-   [[ "$IFACE" = "" ]] && IFACE=$(ip -br a | grep -m 1 UP | grep -o "^[a-zA-Z]*[0-9].[0-9]")
+   [[ "$IFACE" = "" ]] && IFACE=$( ip -br a | grep -m 1 UP | grep -o "^[a-zA-Z]*[0-9]..")
    [[ "$CLIENT_PUBKEY" = "" ]] && abnormal_exit "No client public key given\nFrom the client run:
    umask 077; wg genkey | tee privatekey | wg pubkey > publickey\n"
 }
