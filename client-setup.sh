@@ -16,9 +16,11 @@ abnormal_exit() {
 }
 
 create_config() {
+   local privatekey=$(cat /etc/wireguard/privatekey)
+
    cat << EOF >> /etc/wireguard/client.conf
    [Interface]
-   PrivateKey = $PRIVATE_KEY
+   PrivateKey = $privatekey
    Address=$ADDR
 
    [Peer]
@@ -44,7 +46,6 @@ create_keys() {
    if [ ! -f /etc/wireguard/privatekey ]; then
       echo "Generating encryption keys ..."
       umask 077; wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey
-      PRIVATE_KEY=$(cat /etc/wireguard/privatekey)
       PUBLIC_KEY=$(cat /etc/wireguard/publickey)
    else
       echo "Encryption Keys already exist ...skipping"
