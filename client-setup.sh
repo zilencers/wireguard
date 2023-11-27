@@ -18,15 +18,15 @@ abnormal_exit() {
 create_config() {
    local privatekey=$(cat /etc/wireguard/privatekey)
 
-   cat << EOF >> /etc/wireguard/client.conf
+   cat << EOF >> /etc/wireguard/wg0.conf
    [Interface]
-   PrivateKey = $privatekey
+   PrivateKey=$privatekey
    Address=$ADDR
 
    [Peer]
    PublicKey=$SERVER_PUBKEY
    Endpoint=$ENDPOINT:51820
-   AllowedIPs = 0.0.0.0/0      # Forward all traffic to server
+   AllowedIPs=10.8.0.0/24      # Forward all traffic to server
 EOF
 }
 
